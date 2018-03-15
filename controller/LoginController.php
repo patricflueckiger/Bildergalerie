@@ -28,5 +28,21 @@ require_once '../repository/LoginRepository.php';
       $view->heading = 'Registration';
       $view->display();
     }
+
+    public function benutzer_erstellen(){
+      $nickname;
+      $email;
+      $password;
+      IF($_POST['send']){
+        var_dump($_POST);
+        $email = $_POST['email'];
+        $nickname = $_POST['nickname'];
+        $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
+      }
+
+      $loginRepository = new LoginRepository();
+      $loginRepository->create($nickname,$email,$password);
+      header('Location: /Bildergalerie');
+    }
 }
 ?>
