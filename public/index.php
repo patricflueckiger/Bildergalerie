@@ -10,7 +10,7 @@
  */
 
   // fix schf: approot für url
-  $GLOBALS['appurl'] = '/m151/bilderdb_vorlage_bbcmvc/public';
+  $GLOBALS['appurl'] = '/Bildergalerie/public/';
   $GLOBALS['numAppurlFragments'] = 3;
 
   require_once '../lib/Dispatcher.php';
@@ -19,5 +19,4 @@
 
   $dispatcher = new Dispatcher();
   $dispatcher->dispatch();
-  
 ?>
