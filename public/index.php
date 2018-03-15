@@ -19,4 +19,5 @@
 
   $dispatcher = new Dispatcher();
   $dispatcher->dispatch();
+  
 ?>
