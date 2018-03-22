@@ -43,5 +43,9 @@ require_once '../repository/LoginRepository.php';
       $loginRepository->create($nickname,$email,$password);
       header('Location: /Bildergalerie/');
     }
+
+    public function login(){
+
+    }
 }
 ?>
