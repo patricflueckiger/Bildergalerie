@@ -25,4 +25,4 @@
       'database' => 'bilderdb',
     ),
   );
-?>?>
+?>
