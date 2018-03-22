@@ -34,7 +34,6 @@ require_once '../repository/LoginRepository.php';
       $email;
       $password;
       IF($_POST['send']){
-        var_dump($_POST);
         $email = $_POST['email'];
         $nickname = $_POST['nickname'];
         $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
@@ -42,7 +41,7 @@ require_once '../repository/LoginRepository.php';
 
       $loginRepository = new LoginRepository();
       $loginRepository->create($nickname,$email,$password);
-      header('Location: /Bildergalerie');
+      header('Location: /Bildergalerie/');
     }
 }
 ?>

@@ -6,10 +6,12 @@ require_once '../lib/Repository.php';
  */
   class LoginRepository extends Repository
   {
-    protected $tableName = 'bilder';
+
+    protected $tableName = 'benutzer';
+
     public function create($nickname, $email, $password){
 
-      $query = "INSERT INTO $this->tableName (nickname, email, password) VALUES (?, ?, ?)";
+      $query = "INSERT INTO $this->tableName (nickname, email, password) VALUES ('$nickname', '$email','$password')";
 
       $statement = ConnectionHandler::getConnection()->prepare($query);
       if($statement === false)
