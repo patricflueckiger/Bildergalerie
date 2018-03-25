@@ -1,30 +1,19 @@
-<form name="registration" action="benutzer_erstellen" method="post">
-  <div class="component" data-html="true">
 
-  		<div class="form-group">
-  		  <label class="" for="lastName">Nickname</label>
-  		  <div class="col-md-4">
-  		  	<input id="nickname" name="nickname" type="text" placeholder="Nickname" class="form-control input-md">
-  		  </div>
-  		</div>
-
-  		<div class="form-group">
-  		  <label class="" for="email">E-Mail</label>
-  		  <div class="col-md-4">
-  		  	<input id="email" name="email" type="text" placeholder="Mail" class="form-control input-md">
-  		  </div>
-  		</div>
-  		<div class="form-group">
-  		  <label class="" for="password">Passwort</label>
-  		  <div class="col-md-4">
-  		  	<input id="password" name="password" type="password" placeholder="Passwort" class="form-control input-md">
-  		  </div>
-  		</div>
-  		<div class="form-group">
-  	      <label class="" for="send">&nbsp;</label>
-  		  <div class="col-md-4">
-  		    <input id="send" name="send" type="submit" class="btn btn-primary">
-  		  </div>
-  		</div>
-  	</div>
-</form>
+<?php
+/**
+   * Login-Formular
+   * Das Formular wird mithilfe des Formulargenerators erstellt.
+   */
+   $lblClass = "col-md-2";
+   $eltClass = "col-md-4";
+   $btnClass = "btn btn-success";
+   $form = new Form("benutzer_erstellen","post");
+   $button = new ButtonBuilder();
+    echo $form->input()->label('Nickname')->name('nickname')->type('text')->lblClass($lblClass)->eltClass($eltClass);
+   echo $form->input()->label('E-Mail')->name('email')->type('text')->lblClass($lblClass)->eltClass($eltClass);
+   echo $form->input()->label('Passwort')->name('password')->type('password')->lblClass($lblClass)->eltClass($eltClass);
+   echo $button->start($lblClass, $eltClass);
+   echo $button->label('Login')->name('send')->type('submit')->class('btn-success');
+   echo $button->end();
+ echo $form->end();
+?>

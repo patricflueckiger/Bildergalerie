@@ -44,8 +44,34 @@ require_once '../repository/LoginRepository.php';
       header('Location: /Bildergalerie/');
     }
 
-    public function login(){
+    public function einloggen(){
+      $email;
+      $password;
+      $loginRepository = new LoginRepository();
 
+
+      if($_POST['send']){
+        $email = $_POST['email'];
+        $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
+        $id = $loginRepository->get_id_by_login($email, $password);
+
+        if(isset($id)){
+          $_SESSION["NICKNAME"] = $loginRepository->get_nickname_by_id($id);
+          $_SESSION["UID"] = $id;
+          header('Location: /Bildergalerie/');
+        }
+        else{
+
+        }
+      }
     }
-}
+
+    public function logout(){
+      session_unset();
+      header('Location: /Bildergalerie/');
+    }
+  }
+
+
+
 ?>
