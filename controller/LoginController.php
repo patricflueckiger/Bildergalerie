@@ -9,9 +9,15 @@ require_once '../repository/LoginRepository.php';
      * Default-Seite für das Login: Zeigt das Login-Formular an
 	 * Dispatcher: /login
      */
+    protected $loginRepository;
+    public function __construct(){
+      $this->loginRepository = new LoginRepository();
+
+    }
+
     public function index()
     {
-      $loginRepository = new LoginRepository();
+
       $view = new View('login_index');
       $view->title = 'Bilder-DB';
       $view->heading = 'Login';
@@ -33,43 +39,86 @@ require_once '../repository/LoginRepository.php';
       $nickname;
       $email;
       $password;
-      IF($_POST['send']){
+      $message;
+
+      //Überprüfen ob alle Felder ausgefüllt wurden.
+      if($_POST['password1']!=null&$_POST['password2']!=null&$_POST['nickname']!=null&$_POST['email']!=null){
         $email = $_POST['email'];
         $nickname = $_POST['nickname'];
         $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
-      }
 
-      $loginRepository = new LoginRepository();
-      $loginRepository->create($nickname,$email,$password);
-      header('Location: /Bildergalerie/');
+        //Email validieren
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $_SESSION['message'] = "Die Email ist nicht valid!";
+          header('Location: /Bildergalerie/public/login/registration');
+        }
+
+        //Passwörter überprüfen
+        if($_POST['password1']!=$_POST['password2']){
+          $_SESSION['message'] = "Die Passwörter stimmen nicht überein!";
+          header('Location: /Bildergalerie/public/login/registration');
+
+        }
+        else{
+          //Überprüfen ob die email schon in der Datenbank vorhanden ist.
+          //Wenn diese Email noch nicht besteht, dann den User anlegen.
+          if($this->validate_einmalig($email)){
+            $this->loginRepository->create($nickname,$email,$password);
+            header('Location: /Bildergalerie/');
+          }
+          else {
+            $_SESSION['message'] = "Die Email wird bereits verwendet!";
+            header('Location: /Bildergalerie/public/login/registration');
+          }
+        }
+
+
+      }
+      else {
+
+        $_SESSION['message'] = "Füllen sie alle Eingabefelder aus!";
+        header('Location: /Bildergalerie/public/login/registration');
+      }
     }
 
     public function einloggen(){
       $email;
       $password;
-      $loginRepository = new LoginRepository();
-
 
       if($_POST['send']){
         $email = $_POST['email'];
         $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
-        $id = $loginRepository->get_id_by_login($email, $password);
+          $id = $this->loginRepository->get_id_by_login($email, $password);
 
         if(isset($id)){
-          $_SESSION["NICKNAME"] = $loginRepository->get_nickname_by_id($id);
+          $_SESSION["NICKNAME"] = $this->loginRepository->get_nickname_by_id($id);
           $_SESSION["UID"] = $id;
-          header('Location: /Bildergalerie/');
-        }
-        else{
 
         }
+        else{
+          $_SESSION['message'] = "Die Login eingaben sind falsch";
+        }
       }
+      header('Location:/Bildergalerie/public/login');
     }
 
     public function logout(){
       session_unset();
       header('Location: /Bildergalerie/');
     }
+
+    function validate_einmalig($email){
+       if($this->loginRepository->get_id_by_email($email) != null){
+         return false;
+       }
+       else{
+         return true;
+       }
+
+    }
+
+
+
   }
 
 

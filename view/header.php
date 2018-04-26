@@ -34,6 +34,7 @@
 			<!-- fix schf -->
             <li><a href="<?=$GLOBALS['appurl']?>login">Login</a></li>
             <li><a href="<?=$GLOBALS['appurl']?>login/registration">Registration</a></li>
+
             <li><a href="<?=$GLOBALS['appurl']?>login/logout">Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->

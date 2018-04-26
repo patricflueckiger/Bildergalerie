@@ -29,7 +29,35 @@ require_once '../lib/Repository.php';
       $statement->close();
     }
 
-
+    public function get_id_by_email($email){
+      $tableName = 'benutzer';
+      //Query vorbereiten. Das Fragezeichen sind Platzhalter, welche später durch die Parameter ersetzt werden.
+      $query = "SELECT ID FROM $tableName WHERE EMAIL = ?";
+      //Das Query preparen und gleich die Connection initialisieren.
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      if($statement === false){
+        die(ConnectionHandler::getConnection()->error);
+      }
+      else{
+        //Die beiden Parameter email in das prepared Statement einfügen.
+        //Tipp: s steht für ein string parameter.
+        $statement->bind_param("s", $email);
+      }
+      //Überprüfen ob das Statement ausführbar ist.
+      if (!$statement->execute()) {
+        throw new Exception($statement->error);
+      }
+      else {
+        //ID als ausgabewert definieren.
+        $statement->bind_result($id);
+        //Resultate laden
+        $statement->fetch();
+        //$id zurückgeben.
+        return $id;
+      }
+      //Verbindung schliessen.
+      $statement->close();
+    }
 
     public function get_id_by_login($email, $password){
       $tableName = 'benutzer';
