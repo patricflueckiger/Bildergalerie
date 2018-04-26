@@ -53,32 +53,39 @@ require_once '../repository/LoginRepository.php';
           header('Location: /Bildergalerie/public/login/registration');
         }
 
-        //Passwörter überprüfen
-        if($_POST['password1']!=$_POST['password2']){
-          $_SESSION['message'] = "Die Passwörter stimmen nicht überein!";
-          header('Location: /Bildergalerie/public/login/registration');
+        //Passwörter Validieren
 
+        if($this->validate_passwort($_POST['password1']== false)){
+          $_SESSION['message'] = "Das Passwort muss Mind. 1 Gross- Kleinbuchstabe, 1 Ziffer, 1 Sonderzeichen und MIN 8 Zeichen lang sein";
+          header('Location: /Bildergalerie/public/login/registration');
         }
         else{
-          //Überprüfen ob die email schon in der Datenbank vorhanden ist.
-          //Wenn diese Email noch nicht besteht, dann den User anlegen.
-          if($this->validate_einmalig($email)){
-            $this->loginRepository->create($nickname,$email,$password);
-            header('Location: /Bildergalerie/');
-          }
-          else {
-            $_SESSION['message'] = "Die Email wird bereits verwendet!";
+          //Passwörter überprüfen
+          if($_POST['password1']!=$_POST['password2']){
+            $_SESSION['message'] = "Die Passwörter stimmen nicht überein!";
             header('Location: /Bildergalerie/public/login/registration');
+
+          }
+          else{
+            //Überprüfen ob die email schon in der Datenbank vorhanden ist.
+            //Wenn diese Email noch nicht besteht, dann den User anlegen.
+            if($this->validate_einmalig($email)){
+              $this->loginRepository->create($nickname,$email,$password);
+              header('Location: /Bildergalerie/');
+            }
+            else {
+              $_SESSION['message'] = "Die Email wird bereits verwendet!";
+              header('Location: /Bildergalerie/public/login/registration');
+            }
           }
         }
-
-
       }
       else {
 
         $_SESSION['message'] = "Füllen sie alle Eingabefelder aus!";
         header('Location: /Bildergalerie/public/login/registration');
       }
+
     }
 
     public function einloggen(){
@@ -114,6 +121,17 @@ require_once '../repository/LoginRepository.php';
        else{
          return true;
        }
+
+    }
+
+    function validate_passwort($password){
+      $upper = preg_match("/[A-Z]{1,}/",$password);
+      $lower = preg_match("/[a-z]{1,}/",$password);
+      $number = preg_match("/[0-9]/",$password);
+      $special = preg_match("/[\W_]{1,}/",$password);
+      if(!$upper || !$lower || !$number || !$special || strlen($password) < 8)
+      return false;
+      else return true;
 
     }
 
