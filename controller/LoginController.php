@@ -61,7 +61,7 @@ require_once '../repository/LoginRepository.php';
             header('Location: /Bildergalerie/public/login/registration');
             return;
           }
-          
+
           //Passwörter überprüfen
           if($_POST['password1']!=$_POST['password2']){
             $_SESSION['message'] = "Die Passwörter stimmen nicht überein!";
@@ -71,16 +71,16 @@ require_once '../repository/LoginRepository.php';
 
               //Überprüfen ob die email schon in der Datenbank vorhanden ist.
               //Wenn diese Email noch nicht besteht, dann den User anlegen.
-              if($this->validate_einmalig($email)){
-                $this->loginRepository->create($nickname,$email,$password);
-                header('Location: /Bildergalerie/');
-                return;
-              }
-              else {
-                $_SESSION['message'] = "Die Email wird bereits verwendet!";
-                header('Location: /Bildergalerie/public/login/registration');
-                return;
-              }
+          if($this->validate_einmalig($email)){
+            $this->loginRepository->create($nickname,$email,$password);
+            header('Location: /Bildergalerie/');
+            return;
+          }
+          else {
+            $_SESSION['message'] = "Die Email wird bereits verwendet!";
+            header('Location: /Bildergalerie/public/login/registration');
+            return;
+          }
 
           }
 
@@ -122,11 +122,13 @@ require_once '../repository/LoginRepository.php';
     }
 
     function validate_einmalig($email){
-       if($this->loginRepository->get_id_by_email($email) != null){
-         return false;
+
+       if($this->loginRepository->get_id_by_email($email) == null){
+
+         return true;
        }
        else{
-         return true;
+         return false;
        }
 
     }
