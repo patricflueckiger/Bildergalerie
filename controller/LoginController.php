@@ -45,41 +45,45 @@ require_once '../repository/LoginRepository.php';
       if($_POST['password1']!=null&$_POST['password2']!=null&$_POST['nickname']!=null&$_POST['email']!=null){
         $email = $_POST['email'];
         $nickname = $_POST['nickname'];
-        $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
+        $password = md5($_POST['password1']. 'Hier beliebiger Salt einfügen');
 
-        //Email validieren
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $_SESSION['message'] = "Die Email ist nicht valid!";
-          header('Location: /Bildergalerie/public/login/registration');
-        }
+          //Email validieren
+          if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['message'] = "Die Email ist nicht valid!";
+            header('Location: /Bildergalerie/public/login/registration');
+            return;
+          }
 
-        //Passwörter Validieren
+          //Passwörter Validieren
 
-        if($this->validate_passwort($_POST['password1']== false)){
-          $_SESSION['message'] = "Das Passwort muss Mind. 1 Gross- Kleinbuchstabe, 1 Ziffer, 1 Sonderzeichen und MIN 8 Zeichen lang sein";
-          header('Location: /Bildergalerie/public/login/registration');
-        }
-        else{
+          if(!$this->validate_passwort($_POST['password1'])){
+            $_SESSION['message'] = "Das Passwort muss Mind. 1 Gross- Kleinbuchstabe, 1 Ziffer, 1 Sonderzeichen und MIN 8 Zeichen lang sein";
+            header('Location: /Bildergalerie/public/login/registration');
+            return;
+          }
+          
           //Passwörter überprüfen
           if($_POST['password1']!=$_POST['password2']){
             $_SESSION['message'] = "Die Passwörter stimmen nicht überein!";
             header('Location: /Bildergalerie/public/login/registration');
+            return;
+          }
+
+              //Überprüfen ob die email schon in der Datenbank vorhanden ist.
+              //Wenn diese Email noch nicht besteht, dann den User anlegen.
+              if($this->validate_einmalig($email)){
+                $this->loginRepository->create($nickname,$email,$password);
+                header('Location: /Bildergalerie/');
+                return;
+              }
+              else {
+                $_SESSION['message'] = "Die Email wird bereits verwendet!";
+                header('Location: /Bildergalerie/public/login/registration');
+                return;
+              }
 
           }
-          else{
-            //Überprüfen ob die email schon in der Datenbank vorhanden ist.
-            //Wenn diese Email noch nicht besteht, dann den User anlegen.
-            if($this->validate_einmalig($email)){
-              $this->loginRepository->create($nickname,$email,$password);
-              header('Location: /Bildergalerie/');
-            }
-            else {
-              $_SESSION['message'] = "Die Email wird bereits verwendet!";
-              header('Location: /Bildergalerie/public/login/registration');
-            }
-          }
-        }
-      }
+
       else {
 
         $_SESSION['message'] = "Füllen sie alle Eingabefelder aus!";
@@ -89,17 +93,20 @@ require_once '../repository/LoginRepository.php';
     }
 
     public function einloggen(){
-      $email;
-      $password;
+      $email = "";
+      $password = "";
 
       if($_POST['send']){
         $email = $_POST['email'];
         $password = md5($_POST['password']. 'Hier beliebiger Salt einfügen');
+
           $id = $this->loginRepository->get_id_by_login($email, $password);
 
         if(isset($id)){
           $_SESSION["NICKNAME"] = $this->loginRepository->get_nickname_by_id($id);
           $_SESSION["UID"] = $id;
+          header('Location:/Bildergalerie/public');
+          return;
 
         }
         else{

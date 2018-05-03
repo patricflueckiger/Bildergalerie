@@ -21,7 +21,7 @@
     'database' => array(
       'host' => 'localhost',
       'username' => 'root',
-      'password' => 'gibbiX12345',
+      'password' => '',
       'database' => 'bilderdb',
     ),
   );
